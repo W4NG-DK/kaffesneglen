@@ -20,8 +20,8 @@
     .logo {
       display: block;
       margin: 0 auto 20px;
-      max-width: 100px;
-      max-height: 60px;
+      max-width: 70px;
+      max-height: 30px;
       animation: fadeIn 1s ease-in;
     }
     @keyframes fadeIn {
@@ -58,7 +58,7 @@
       box-sizing: border-box;
     }
     button {
-      background: linear-gradient(#6f4e37, #5a3c2b); /* Gradient for knapper */
+      background: linear-gradient(#6f4e37, #5a3c2b);
       color: white;
       padding: 10px 20px;
       border: none;
@@ -135,6 +135,12 @@
       text-align: center;
       margin-bottom: 10px;
     }
+    .sync-status {
+      font-size: 12px;
+      color: #4682b4;
+      text-align: center;
+      margin-top: 5px;
+    }
   </style>
 </head>
 <body>
@@ -169,6 +175,7 @@
       </div>
     </div>
     <button id="saveButton" onclick="saveOrder()">Gem Bestilling</button>
+    <div class="sync-status" id="syncStatus">Synkroniserer...</div>
   </div>
 
   <div id="far" class="tab section">
@@ -186,7 +193,27 @@
 
   <div class="footer">Lavet af Malte Wienke</div>
 
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js"></script>
+
   <script>
+    // Firebase konfiguration (udskift med din egen fra Firebase Console)
+const firebaseConfig = {
+  apiKey: "AIzaSyBv1HKHhYpeCmOcywaoqNA0eA8L0CYwl5Y",
+  authDomain: "kaffesneglen-bestilling.firebaseapp.com",
+  databaseURL: "https://kaffesneglen-bestilling-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "kaffesneglen-bestilling",
+  storageBucket: "kaffesneglen-bestilling.firebasestorage.app",
+  messagingSenderId: "838602795466",
+  appId: "1:838602795466:web:8ee7695abb214aaec78733"
+};
+
+
+    // Initialiser Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
     // Sæt fokus på første inputfelt ved sideload
     window.onload = function() {
       document.getElementById('capri').focus();
@@ -209,13 +236,29 @@
       }
 
       const order = { capri, iskaffe, isterninger, timestamp: new Date().toLocaleString('da-DK') };
-      localStorage.setItem('kaffevognOrder', JSON.stringify(order));
+      
+      // Gem i Firebase
+      database.ref('currentOrder').set(order)
+        .then(() => {
+          document.getElementById('syncStatus').textContent = 'Synkroniseret!';
+        })
+        .catch((error) => {
+          document.getElementById('syncStatus').textContent = 'Synkronisering mislykkedes!';
+          console.error('Fejl ved gemning:', error);
+        });
 
       // Gem i historik (maks 5 bestillinger)
-      let history = JSON.parse(localStorage.getItem('kaffevognHistory') || '[]');
-      history.unshift(order); // Tilføj nyeste bestilling øverst
-      if (history.length > 5) history = history.slice(0, 5); // Begræns til 5
-      localStorage.setItem('kaffevognHistory', JSON.stringify(history));
+      database.ref('history').push(order)
+        .then(() => {
+          // Begræns historik til 5
+          database.ref('history').orderByKey().limitToLast(5).once('value', (snapshot) => {
+            const history = [];
+            snapshot.forEach(child => {
+              history.push({ key: child.key, ...child.val() });
+            });
+            database.ref('history').set(history.reverse());
+          });
+        });
 
       const saveButton = document.getElementById('saveButton');
       saveButton.classList.add('saved');
@@ -224,46 +267,59 @@
     }
 
     function updateOrderList() {
-      const order = JSON.parse(localStorage.getItem('kaffevognOrder') || '{}');
-      const history = JSON.parse(localStorage.getItem('kaffevognHistory') || '[]');
       const orderList = document.getElementById('orderList');
       const timestamp = document.getElementById('timestamp');
       const historyList = document.getElementById('historyList');
-      
-      // Opdater aktuel bestilling
-      orderList.innerHTML = '';
-      if (order.capri || order.iskaffe || order.isterninger) {
-        const ul = document.createElement('ul');
-        if (order.capri) ul.innerHTML += `<li>Capri Sonne: ${order.capri}</li>`;
-        if (order.iskaffe) ul.innerHTML += `<li>Iskaffe blanding: ${order.iskaffe}</li>`;
-        if (order.isterninger) ul.innerHTML += `<li>Isterning poser: ${order.isterninger}</li>`;
-        orderList.appendChild(ul);
-        timestamp.textContent = `Sidst gemt: ${order.timestamp || 'Ingen tid registreret'}`;
-      } else {
-        orderList.innerHTML = '<p>Ingen bestilling endnu.</p>';
-        timestamp.textContent = 'Ingen bestilling endnu.';
-      }
 
-      // Opdater historik
-      historyList.innerHTML = '<h3>Tidligere bestillinger</h3>';
-      if (history.length > 0) {
-        const ul = document.createElement('ul');
-        history.forEach((hist, index) => {
-          if (index === 0 && order.timestamp === hist.timestamp) return; // Skip aktuel bestilling
-          let items = [];
-          if (hist.capri) items.push(`Capri Sonne: ${hist.capri}`);
-          if (hist.iskaffe) items.push(`Iskaffe blanding: ${hist.iskaffe}`);
-          if (hist.isterninger) items.push(`Isterning poser: ${hist.isterninger}`);
-          ul.innerHTML += `<li>${hist.timestamp}: ${items.join(', ')}</li>`;
+      // Hent aktuel bestilling
+      database.ref('currentOrder').on('value', (snapshot) => {
+        const order = snapshot.val() || {};
+        orderList.innerHTML = '';
+        if (order.capri || order.iskaffe || order.isterninger) {
+          const ul = document.createElement('ul');
+          if (order.capri) ul.innerHTML += `<li>Capri Sonne: ${order.capri}</li>`;
+          if (order.iskaffe) ul.innerHTML += `<li>Iskaffe blanding: ${order.iskaffe}</li>`;
+          if (order.isterninger) ul.innerHTML += `<li>Isterning poser: ${order.isterninger}</li>`;
+          orderList.appendChild(ul);
+          timestamp.textContent = `Sidst gemt: ${order.timestamp || 'Ingen tid registreret'}`;
+        } else {
+          orderList.innerHTML = '<p>Ingen bestilling endnu.</p>';
+          timestamp.textContent = 'Ingen bestilling endnu.';
+        }
+      });
+
+      // Hent historik
+      database.ref('history').on('value', (snapshot) => {
+        const history = [];
+        snapshot.forEach(child => {
+          history.push(child.val());
         });
-        historyList.appendChild(ul);
-      } else {
-        historyList.innerHTML += '<p>Ingen historik endnu.</p>';
-      }
+        historyList.innerHTML = '<h3>Tidligere bestillinger</h3>';
+        if (history.length > 0) {
+          const ul = document.createElement('ul');
+          history.forEach((hist, index) => {
+            let items = [];
+            if (hist.capri) items.push(`Capri Sonne: ${hist.capri}`);
+            if (hist.iskaffe) items.push(`Iskaffe blanding: ${hist.iskaffe}`);
+            if (hist.isterninger) items.push(`Isterning poser: ${hist.isterninger}`);
+            ul.innerHTML += `<li>${hist.timestamp}: ${items.join(', ')}</li>`;
+          });
+          historyList.appendChild(ul);
+        } else {
+          historyList.innerHTML += '<p>Ingen historik endnu.</p>';
+        }
+      });
     }
 
     function clearOrder() {
-      localStorage.removeItem('kaffevognOrder');
+      database.ref('currentOrder').remove()
+        .then(() => {
+          document.getElementById('syncStatus').textContent = 'Synkroniseret!';
+        })
+        .catch((error) => {
+          document.getElementById('syncStatus').textContent = 'Synkronisering mislykkedes!';
+          console.error('Fejl ved nulstilling:', error);
+        });
       updateOrderList();
       document.getElementById('capri').value = '';
       document.getElementById('iskaffe').value = '';
@@ -272,9 +328,6 @@
       saveButton.classList.remove('saved');
       alert('Bestilling nulstillet!');
     }
-
-    // Opdater listen ved sideload
-    updateOrderList();
   </script>
 </body>
 </html>
