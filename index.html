@@ -68,6 +68,10 @@
       width: 100%;
       font-size: 16px;
       transition: background-color 0.3s, transform 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px; /* Afstand mellem tekst og ikon */
     }
     button:hover {
       background: linear-gradient(#5a3c2b, #4b2e1e);
@@ -80,6 +84,14 @@
     }
     button:active {
       transform: scale(0.95);
+    }
+    .check-icon {
+      display: none;
+      width: 16px; /* Fast størrelse på ikon */
+      height: 16px;
+    }
+    button.saved .check-icon {
+      display: inline; /* Vis ikon, når bestilling er gemt */
     }
     #orderList, #historyList {
       margin-top: 20px;
@@ -141,14 +153,15 @@
       color: #4682b4;
       text-align: center;
       margin-top: 5px;
+      margin-bottom: 80px; /* Plads til sticky knap */
     }
     .sync-error {
       color: #ff0000;
     }
     /* Sticky knapper på mobil og tablet */
-    @media (max-width: 768px) {
+    @media (max-width: 1024px) {
       body {
-        padding-bottom: 80px; /* Plads til sticky knapper */
+        padding-bottom: 100px; /* Plads til sticky knapper og sync-status */
       }
       #saveButton, #far button {
         position: fixed;
@@ -156,14 +169,19 @@
         left: 20px;
         right: 20px;
         width: calc(100% - 40px);
-        z-index: 1000;
+        z-index: 2000; /* Høj z-index for at være over alt */
         box-shadow: 0 -2px 4px rgba(0,0,0,0.2);
       }
       #saveButton {
-        bottom: 20px; /* Første knap */
+        bottom: 20px; /* Gem Bestilling */
       }
       #far button {
-        bottom: 20px; /* Samme position for nulstil-knap */
+        bottom: 20px; /* Nulstil Bestilling */
+      }
+      /* Forbedret iOS-kompatibilitet */
+      #saveButton, #far button {
+        position: -webkit-sticky;
+        position: sticky;
       }
     }
   </style>
@@ -199,7 +217,7 @@
         <input type="number" id="isterninger" min="0" placeholder="Antal" onkeypress="if(event.key === 'Enter') saveOrder()">
       </div>
     </div>
-    <button id="saveButton" onclick="saveOrder()">Gem Bestilling</button>
+    <button id="saveButton" onclick="saveOrder()">Gem Bestilling <img class="check-icon" src="/kaffesneglen/tjek.png" alt="Tjek-ikon"></button>
     <div class="sync-status" id="syncStatus">Klar til synkronisering</div>
   </div>
 
