@@ -196,9 +196,38 @@
       50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
       100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
     }
+    details {
+      margin-bottom: 15px;
+      background: #fffaf0;
+      border-radius: 4px;
+      padding: 10px;
+    }
+    summary {
+      font-weight: bold;
+      color: #4b2e1e;
+      cursor: pointer;
+      padding: 5px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    summary::marker {
+      content: '';
+    }
+    summary::before {
+      content: '▶';
+      display: inline-block;
+      transition: transform 0.2s;
+    }
+    details[open] summary::before {
+      transform: rotate(90deg);
+    }
+    .category-content {
+      padding: 10px 0;
+    }
     @media (max-width: 1024px) {
       body {
-        padding-bottom: 100px;
+        padding-bottom: 120px;
       }
       #saveButton, #far button {
         position: fixed;
@@ -232,32 +261,148 @@
 
   <div id="mor" class="tab section active">
     <h2>Indtast hvad du mangler</h2>
-    <div class="input-group">
-      <span>🥤</span>
-      <div>
-        <label for="capri">Capri Sonne</label>
-        <input type="number" inputmode="numeric" id="capri" min="0" placeholder="Antal" onkeypress="if(event.key === 'Enter') saveOrder()">
+    <details open>
+      <summary>Fødevare</summary>
+      <div class="category-content">
+        <div class="input-group">
+          <span>🥛</span>
+          <div>
+            <label for="milk">Mælk</label>
+            <input type="number" inputmode="numeric" id="milk" min="0" placeholder="Antal" onkeypress="if(event.key === 'Enter') saveOrder()">
+          </div>
+        </div>
+        <div class="input-group">
+          <span>🧊</span>
+          <div>
+            <label for="iceCubes">Isterninger</label>
+            <input type="number" inputmode="numeric" id="iceCubes" min="0" placeholder="Antal" onkeypress="if(event.key === 'Enter') saveOrder()">
+          </div>
+        </div>
+        <div class="input-group">
+          <span>🥤</span>
+          <div>
+            <label for="capriSun">Capri Sun</label>
+            <input type="number" inputmode="numeric" id="capriSun" min="0" placeholder="Antal" onkeypress="if(event.key === 'Enter') saveOrder()">
+          </div>
+        </div>
+        <div class="input-group">
+          <span>☕</span>
+          <div>
+            <label for="coffee">Kaffe</label>
+            <input type="number" inputmode="numeric" id="coffee" min="0" placeholder="Antal" onkeypress="if(event.key === 'Enter') saveOrder()">
+          </div>
+        </div>
+        <div class="input-group">
+          <span>🌾</span>
+          <div>
+            <label for="oatDrink">Havredrik</label>
+            <input type="number" inputmode="numeric" id="oatDrink" min="0" placeholder="Antal" onkeypress="if(event.key === 'Enter') saveOrder()">
+          </div>
+        </div>
+        <div class="input-group">
+          <span>💧</span>
+          <div>
+            <label for="waterJugs">Vand i dunke</label>
+            <input type="number" inputmode="numeric" id="waterJugs" min="0" placeholder="Antal" onkeypress="if(event.key === 'Enter') saveOrder()">
+          </div>
+        </div>
+        <div class="input-group">
+          <span>🥛</span>
+          <div>
+            <label for="miniMilk">Mini mælk</label>
+            <input type="number" inputmode="numeric" id="miniMilk" min="0" placeholder="Antal" onkeypress="if(event.key === 'Enter') saveOrder()">
+          </div>
+        </div>
+        <div class="input-group">
+          <span>🧁</span>
+          <div>
+            <label for="whippedCream">Flødeskum</label>
+            <input type="number" inputmode="numeric" id="whippedCream" min="0" placeholder="Antal" onkeypress="if(event.key === 'Enter') saveOrder()">
+          </div>
+        </div>
+        <div class="input-group">
+          <span>💧</span>
+          <div>
+            <label for="springWater">Kildevand</label>
+            <input type="number" inputmode="numeric" id="springWater" min="0" placeholder="Antal" onkeypress="if(event.key === 'Enter') saveOrder()">
+          </div>
+        </div>
+        <div alue_f="input-group">
+          <span>🍫</span>
+          <div>
+            <label for="cocoa">Cacao</label>
+            <input type="number" inputmode="numeric" id="cocoa" min="0" placeholder="Antal" onkeypress="if(event.key === 'Enter') saveOrder()">
+          </div>
+        </div>
+        <div class="input-group">
+          <span>🍪</span>
+          <div>
+            <label for="cookie">Cookie</label>
+            <input type="number" inputmode="numeric" id="cookie" min="0" placeholder="Antal" onkeypress="if(event.key === 'Enter') saveOrder()">
+          </div>
+        </div>
+        <div class="input-group">
+          <span>🍎</span>
+          <div>
+            <label for="fruitBiscuits">Frugtkiks</label>
+            <input type="number" inputmode="numeric" id="fruitBiscuits" min="0" placeholder="Antal" onkeypress="if(event.key === 'Enter') saveOrder()">
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="input-group">
-      <span>☕</span>
-      <div>
-        <label for="iskaffe">Iskaffe blanding</label>
-        <input type="number" inputmode="numeric" id="iskaffe" min="0" placeholder="Antal" onkeypress="if(event.key === 'Enter') saveOrder()">
+    </details>
+    <details open>
+      <summary>Tilbehør</summary>
+      <div class="category-content">
+        <div class="input-group">
+          <span>🥤</span>
+          <div>
+            <label for="largeCups">Store kopper</label>
+            <input type="number" inputmode="numeric" id="largeCups" min="0" placeholder="Antal" onkeypress="if(event.key === 'Enter') saveOrder()">
+          </div>
+        </div>
+        <div class="input-group">
+          <span>🥤</span>
+          <div>
+            <label for="mediumCups">Mellem kopper</label>
+            <input type="number" inputmode="numeric" id="mediumCups" min="0" placeholder="Antal" onkeypress="if(event.key === 'Enter') saveOrder()">
+          </div>
+        </div>
+        <div class="input-group">
+          <span>☕</span>
+          <div>
+            <label for="espressoCups">Espresso kopper</label>
+            <input type="number" inputmode="numeric" id="espressoCups" min="0" placeholder="Antal" onkeypress="if(event.key === 'Enter') saveOrder()">
+          </div>
+        </div>
+        <div class="input-group">
+          <span>🧊</span>
+          <div>
+            <label for="icedCoffeeGlasses">Iskaffe glas</label>
+            <input type="number" inputmode="numeric" id="icedCoffeeGlasses" min="0" placeholder="Antal" onkeypress="if(event.key === 'Enter') saveOrder()">
+          </div>
+        </div>
+        <div class="input-group">
+          <span>🥤</span>
+          <div>
+            <label for="straws">Sugerør</label>
+            <input type="number" inputmode="numeric" id="straws" min="0" placeholder="Antal" onkeypress="if(event.key === 'Enter') saveOrder()">
+          </div>
+        </div>
+        <div class="input-group">
+          <span>🔲</span>
+          <div>
+            <label for="icedCoffeeLids">Iskaffelåg</label>
+            <input type="number" inputmode="numeric" id="icedCoffeeLids" min="0" placeholder="Antal" onkeypress="if(event.key === 'Enter') saveOrder()">
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="input-group">
-      <span>🧊</span>
-      <div>
-        <label for="isterninger">Isterning poser</label>
-        <input type="number" inputmode="numeric" id="isterninger" min="0" placeholder="Antal" onkeypress="if(event.key === 'Enter') saveOrder()">
-      </div>
-    </div>
+    </details>
+
     <div class="input-group">
       <span>📝</span>
       <div>
         <label for="notes">Noter</label>
-        <textarea id="notes" placeholder="Skriv eventuelle noter her..." rows="4"></textarea>
+        <textarea id="notes" placeholder="Skriv eventuelle noter her..." rows="5"></textarea>
       </div>
     </div>
     <button id="saveButton" onclick="saveOrder()">Gem Bestilling <img class="check-icon" src="/kaffesneglen/tjek.png" alt="Tjek-ikon"></button>
@@ -266,13 +411,13 @@
 
   <div id="far" class="tab section">
     <h2>Bestilling til pakning</h2>
-    <div class="timestamp" id="timestamp">Ingen bestilling endnu.</div>
+    <div class="timestamp" id="timestamp">Ingen bestilling</div>
     <div id="orderList">
-      <p>Ingen bestilling endnu.</p>
+      <p>Ingen bestilling</p>
     </div>
     <div id="historyList">
       <h3>Tidligere bestillinger</h3>
-      <p>Ingen historik endnu.</p>
+      <p>Ingen historik</p>
     </div>
     <button onclick="clearOrder()">Nulstil Bestilling</button>
   </div>
@@ -288,29 +433,22 @@
 
   <script>
     const firebaseConfig = {
-      apiKey: "AIzaSyBv1HKHhYpeCmOcywaoqNA0eA8L0CYwl5Y",
+      apiKey: "AIzaSyBv1HKHhYpeCm714O2cywaoqNA0eA8L0CYwl5Y",
       authDomain: "kaffesneglen-bestilling.firebaseapp.com",
       databaseURL: "https://kaffesneglen-bestilling-default-rtdb.europe-west1.firebasedatabase.app",
       projectId: "kaffesneglen-bestilling",
-      storageBucket: "kaffesneglen-bestilling.firebasestorage.app",
+      storageBucket: "kaffesneglen-bestilling.appspot.com",
       messagingSenderId: "838602795466",
-      appId: "1:838602795466:web:8ee7695abb214aaec78733"
+      appId: "1:838602795466:web:8ee7695cbb214aaec78733"
     };
 
-    let database;
-    try {
-      firebase.initializeApp(firebaseConfig);
-      database = firebase.database();
-      document.getElementById('syncStatus').textContent = 'Forbindelse etableret';
-    } catch (error) {
-      document.getElementById('syncStatus').textContent = 'Fejl: Kan ikke forbinde til Firebase';
-      document.getElementById('syncStatus').classList.add('sync-error');
-      console.error('Firebase initialiseringsfejl:', error);
-    }
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    document.getElementById('syncStatus').textContent = 'Forbindelse etableret';
 
-    window.onload = function() {
-      document.getElementById('capri').focus();
-      if (database) updateOrderList();
+    window.onload = () => {
+      document.getElementById('milk').focus();
+      updateOrderList();
     };
 
     function showTab(tabId) {
@@ -319,62 +457,61 @@
     }
 
     function saveOrder() {
-      const capri = parseInt(document.getElementById('capri').value) || 0;
-      const iskaffe = parseInt(document.getElementById('iskaffe').value) || 0;
-      const isterninger = parseInt(document.getElementById('isterninger').value) || 0;
-      const notes = document.getElementById('notes').value.trim();
-      
-      if (capri === 0 && iskaffe === 0 && isterninger === 0 && notes === '') {
-        alert('Indtast mindst én vare eller en note før du gemmer!');
-        return;
-      }
-
-      const order = { 
-        capri, 
-        iskaffe, 
-        isterninger, 
-        notes, 
-        timestamp: new Date().toLocaleString('da-DK', { timeZone: 'Europe/Copenhagen' }) 
+      const order = {
+        milk: parseInt(document.getElementById('milk').value) || 0,
+        iceCubes: parseInt(document.getElementById('iceCubes').value) || 0,
+        capriSun: parseInt(document.getElementById('capriSun').value) || 0,
+        coffee: parseInt(document.getElementById('coffee').value) || 0,
+        oatDrink: parseInt(document.getElementById('oatDrink').value) || 0,
+        waterJugs: parseInt(document.getElementById('waterJugs').value) || 0,
+        miniMilk: parseInt(document.getElementById('miniMilk').value) || 0,
+        whippedCream: parseInt(document.getElementById('whippedCream').value) || 0,
+        springWater: parseInt(document.getElementById('springWater').value) || 0,
+        cocoa: parseInt(document.getElementById('cocoa').value) || 0,
+        cookie: parseInt(document.getElementById('cookie').value) || 0,
+        fruitBiscuits: parseInt(document.getElementById('fruitBiscuits').value) || 0,
+        largeCups: parseInt(document.getElementById('largeCups').value) || 0,
+        mediumCups: parseInt(document.getElementById('mediumCups').value) || 0,
+        espressoCups: parseInt(document.getElementById('espressoCups').value) || 0,
+        icedCoffeeGlasses: parseInt(document.getElementById('icedCoffeeGlasses').value) || 0,
+        straws: parseInt(document.getElementById('straws').value) || 0,
+        icedCoffeeLids: parseInt(document.getElementById('icedCoffeeLids').value) || 0,
+        notes: document.getElementById('notes').value.trim(),
+        timestamp: new Date().toLocaleString('da-DK', { timeZone: 'Europe/Copenhagen' })
       };
-      
-      if (!database) {
-        document.getElementById('syncStatus').textContent = 'Fejl: Ingen Firebase-forbindelse';
-        document.getElementById('syncStatus').classList.add('sync-error');
+
+      const hasItems = Object.keys(order).some(key => key !== 'notes' && key !== 'timestamp' && order[key] > 0) || order.notes !== '';
+      if (!hasItems) {
+        alert('Indtast mindst én vare eller en note!');
         return;
       }
 
       document.getElementById('syncStatus').textContent = 'Synkroniserer...';
-      
+
       database.ref('currentOrder').set(order)
         .then(() => {
           document.getElementById('syncStatus').textContent = 'Synkroniseret!';
           document.getElementById('syncStatus').classList.remove('sync-error');
-          
+
           const popupIcon = document.getElementById('popup-icon');
           popupIcon.classList.add('active');
-          setTimeout(() => {
-            popupIcon.classList.remove('active');
-          }, 1000);
+          setTimeout(() => popupIcon.classList.remove('active'), 1000);
         })
-        .catch((error) => {
+        .catch(error => {
           document.getElementById('syncStatus').textContent = `Fejl: ${error.message}`;
           document.getElementById('syncStatus').classList.add('sync-error');
-          console.error('Fejl ved gemning:', error);
+          console.error('Error saving order:', error);
         });
 
       database.ref('history').push(order)
         .then(() => {
-          database.ref('history').orderByKey().limitToLast(5).once('value', (snapshot) => {
+          database.ref('history').orderByKey().limitToLast(5).once('value', snapshot => {
             const history = [];
-            snapshot.forEach(child => {
-              history.push({ key: child.key, ...child.val() });
-            });
+            snapshot.forEach(child => history.push(child.val()));
             database.ref('history').set(history.reverse());
           });
         })
-        .catch((error) => {
-          console.error('Fejl ved historik-gemning:', error);
-        });
+        .catch(error => console.error('Error saving history:', error));
 
       const saveButton = document.getElementById('saveButton');
       saveButton.classList.add('saved');
@@ -383,79 +520,113 @@
     }
 
     function updateOrderList() {
-      if (!database) return;
-
       const orderList = document.getElementById('orderList');
       const timestamp = document.getElementById('timestamp');
       const historyList = document.getElementById('historyList');
 
-      database.ref('currentOrder').on('value', (snapshot) => {
+      database.ref('currentOrder').on('value', snapshot => {
         const order = snapshot.val() || {};
         orderList.innerHTML = '';
-        if (order.capri || order.iskaffe || order.isterninger || order.notes) {
+        const hasItems = Object.keys(order).some(key => key !== 'notes' && key !== 'timestamp' && order[key] > 0);
+        if (hasItems || order.notes) {
           const ul = document.createElement('ul');
-          if (order.capri) ul.innerHTML += `<li>Capri Sonne: ${order.capri}</li>`;
-          if (order.iskaffe) ul.innerHTML += `<li>Iskaffe blanding: ${order.iskaffe}</li>`;
-          if (order.isterninger) ul.innerHTML += `<li>Isterning poser: ${order.isterninger}</li>`;
+          if (order.milk) ul.innerHTML += `<li>Mælk: ${order.milk}</li>`;
+          if (order.iceCubes) ul.innerHTML += `<li>Isterninger: ${order.iceCubes}</li>`;
+          if (order.capriSun) ul.innerHTML += `<li>Capri Sun: ${order.capriSun}</li>`;
+          if (order.coffee) ul.innerHTML += `<li>Kaffe: ${order.coffee}</li>`;
+          if (order.oatDrink) ul.innerHTML += `<li>Havredrik: ${order.oatDrink}</li>`;
+          if (order.waterJugs) ul.innerHTML += `<li>Vand i dunke: ${order.waterJugs}</li>`;
+          if (order.miniMilk) ul.innerHTML += `<li>Mini mælk: ${order.miniMilk}</li>`;
+          if (order.whippedCream) ul.innerHTML += `<li>Flødeskum: ${order.whippedCream}</li>`;
+          if (order.springWater) ul.innerHTML += `<li>Kildevand: ${order.springWater}</li>`;
+          if (order.cocoa) ul.innerHTML += `<li>Cacao: ${order.cocoa}</li>`;
+          if (order.cookie) ul.innerHTML += `<li>Cookie: ${order.cookie}</li>`;
+          if (order.fruitBiscuits) ul.innerHTML += `<li>Frugtkiks: ${order.fruitBiscuits}</li>`;
+          if (order.largeCups) ul.innerHTML += `<li>Store kopper: ${order.largeCups}</li>`;
+          if (order.mediumCups) ul.innerHTML += `<li>Mellem kopper: ${order.mediumCups}</li>`;
+          if (order.espressoCups) ul.innerHTML += `<li>Espresso kopper: ${order.espressoCups}</li>`;
+          if (order.icedCoffeeGlasses) ul.innerHTML += `<li>Iskaffe glas: ${order.icedCoffeeGlasses}</li>`;
+          if (order.straws) ul.innerHTML += `<li>Sugerør: ${order.straws}</li>`;
+          if (order.icedCoffeeLids) ul.innerHTML += `<li>Iskaffelåg: ${order.icedCoffeeLids}</li>`;
           if (order.notes) ul.innerHTML += `<li class="notes">Noter: ${order.notes}</li>`;
           orderList.appendChild(ul);
           timestamp.textContent = `Sidst gemt: ${order.timestamp || 'Ingen tid registreret'}`;
         } else {
-          orderList.innerHTML = '<p>Ingen bestilling endnu.</p>';
-          timestamp.textContent = 'Ingen bestilling endnu.';
+          orderList.innerHTML = '<p>Ingen bestilling</p>';
+          timestamp.textContent = 'Ingen bestilling';
         }
-      }, (error) => {
-        console.error('Fejl ved hentning af bestilling:', error);
+      }, error => {
+        console.error('Error fetching order:', error);
         document.getElementById('syncStatus').textContent = `Fejl: ${error.message}`;
         document.getElementById('syncStatus').classList.add('sync-error');
       });
 
-      database.ref('history').on('value', (snapshot) => {
+      database.ref('history').on('value', snapshot => {
         const history = [];
-        snapshot.forEach(child => {
-          history.push(child.val());
-        });
+        snapshot.forEach(child => history.push(child.val()));
         historyList.innerHTML = '<h3>Tidligere bestillinger</h3>';
         if (history.length > 0) {
           const ul = document.createElement('ul');
-          history.forEach((hist, index) => {
-            let items = [];
-            if (hist.capri) items.push(`Capri Sonne: ${hist.capri}`);
-            if (hist.iskaffe) items.push(`Iskaffe blanding: ${hist.iskaffe}`);
-            if (hist.isterninger) items.push(`Isterning poser: ${hist.isterninger}`);
+          history.forEach(hist => {
+            const items = [];
+            if (hist.milk) items.push(`Milk: ${hist.milk}`);
+            if (hist.iceCubes) items.push(`Isterninger: ${hist.iceCubes}`);
+            if (hist.capriSun) items.push(`Capri Sun: ${hist.capriSun}`);
+            if (hist.coffee) items.push(`Kaffe: ${hist.coffee}`);
+            if (hist.oatDrink) items.push(`Havredrik: ${hist.oatDrink}`);
+            if (hist.waterJugs) items.push(`Vand i dunke: ${hist.waterJugs}`);
+            if (hist.miniMilk) items.push(`Mini mælk: ${hist.miniMilk}`);
+            if (hist.whippedCream) items.push(`Flødeskum: ${hist.whippedCream}`);
+            if (hist.springWater) items.push(`Kildevand: ${hist.springWater}`);
+            if (hist.cocoa) items.push(`Cacao: ${hist.cocoa}`);
+            if (hist.cookie) items.push(`Cookie: ${hist.cookie}`);
+            if (hist.fruitBiscuits) items.push(`Frugtkiks: ${hist.fruitBiscuits}`);
+            if (hist.largeCups) items.push(`Store kopper: ${hist.largeCups}`);
+            if (hist.mediumCups) items.push(`Mellem kopper: ${hist.mediumCups}`);
+            if (hist.espressoCups) items.push(`Espresso kopper: ${hist.espressoCups}`);
+            if (hist.icedCoffeeGlasses) items.push(`Iskaffe glas: ${hist.icedCoffeeGlasses}`);
+            if (hist.straws) items.push(`Sugerør: ${hist.straws}`);
+            if (hist.icedCoffeeLids) items.push(`Iskaffelåg: ${hist.icedCoffeeLids}`);
             if (hist.notes) items.push(`Noter: ${hist.notes}`);
             ul.innerHTML += `<li>${hist.timestamp}: ${items.join(', ')}</li>`;
           });
           historyList.appendChild(ul);
         } else {
-          historyList.innerHTML += '<p>Ingen historik endnu.</p>';
+          historyList.innerHTML += '<p>Ingen historik</p>';
         }
-      }, (error) => {
-        console.error('Fejl ved hentning af historik:', error);
-      });
+      }, error => console.error('Error fetching history:', error));
     }
 
     function clearOrder() {
-      if (!database) {
-        document.getElementById('syncStatus').textContent = 'Fejl: Ingen Firebase-forbindelse';
-        document.getElementById('syncStatus').classList.add('sync-error');
-        return;
-      }
-
       database.ref('currentOrder').remove()
         .then(() => {
           document.getElementById('syncStatus').textContent = 'Synkroniseret!';
           document.getElementById('syncStatus').classList.remove('sync-error');
         })
-        .catch((error) => {
+        .catch(error => {
           document.getElementById('syncStatus').textContent = `Fejl: ${error.message}`;
           document.getElementById('syncStatus').classList.add('sync-error');
-          console.error('Fejl ved nulstilling:', error);
+          console.error('Error clearing order:', error);
         });
       updateOrderList();
-      document.getElementById('capri').value = '';
-      document.getElementById('iskaffe').value = '';
-      document.getElementById('isterninger').value = '';
+      document.getElementById('milk').value = '';
+      document.getElementById('iceCubes').value = '';
+      document.getElementById('capriSun').value = '';
+      document.getElementById('coffee').value = '';
+      document.getElementById('oatDrink').value = '';
+      document.getElementById('waterJugs').value = '';
+      document.getElementById('miniMilk').value = '';
+      document.getElementById('whippedCream').value = '';
+      document.getElementById('springWater').value = '';
+      document.getElementById('cocoa').value = '';
+      document.getElementById('cookie').value = '';
+      document.getElementById('fruitBiscuits').value = '';
+      document.getElementById('largeCups').value = '';
+      document.getElementById('mediumCups').value = '';
+      document.getElementById('espressoCups').value = '';
+      document.getElementById('icedCoffeeGlasses').value = '';
+      document.getElementById('straws').value = '';
+      document.getElementById('icedCoffeeLids').value = '';
       document.getElementById('notes').value = '';
       const saveButton = document.getElementById('saveButton');
       saveButton.classList.remove('saved');
