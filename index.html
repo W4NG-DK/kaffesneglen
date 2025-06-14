@@ -10,20 +10,21 @@
       max-width: 600px;
       margin: 20px auto;
       padding: 20px;
-      background-color: #f4f4f4;
+      background-color: #f5e8d3; /* Kaffevogns-inspireret beige baggrund */
       position: relative;
     }
     h1, h2 {
       text-align: center;
-      color: #333;
+      color: #4b2e1e; /* Mørk kaffefarve */
     }
     .logo {
       display: block;
       margin: 0 auto 20px;
-      max-width: 80px; /* Reduceret fra 100px til 80px */
+      max-width: 70px;
+      max-height: 30px;
     }
     .section {
-      background: white;
+      background: #fffaf0; /* Cremet hvid */
       padding: 20px;
       border-radius: 8px;
       margin-bottom: 20px;
@@ -31,11 +32,18 @@
     }
     .input-group {
       margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+    }
+    .input-group span {
+      margin-right: 10px;
+      font-size: 20px;
     }
     label {
       display: block;
       margin-bottom: 5px;
       font-weight: bold;
+      color: #4b2e1e;
     }
     input {
       width: 100%;
@@ -45,7 +53,7 @@
       box-sizing: border-box;
     }
     button {
-      background-color: #4CAF50;
+      background-color: #6f4e37; /* Kaffefarvet knap */
       color: white;
       padding: 10px 20px;
       border: none;
@@ -53,16 +61,19 @@
       cursor: pointer;
       width: 100%;
       font-size: 16px;
-      transition: background-color 0.3s;
-    }
-    button.saved {
-      background-color: #008CBA;
+      transition: background-color 0.3s, transform 0.2s;
     }
     button:hover {
-      background-color: #45a049;
+      background-color: #5a3c2b;
+    }
+    button.saved {
+      background-color: #4682b4; /* Blå for gemt */
     }
     button.saved:hover {
-      background-color: #007399;
+      background-color: #3b6a9b;
+    }
+    button:active {
+      transform: scale(0.95); /* Subtil animation ved tryk */
     }
     #orderList {
       margin-top: 20px;
@@ -89,7 +100,7 @@
       margin-bottom: 20px;
     }
     .tab-button {
-      background-color: #008CBA;
+      background-color: #6f4e37;
       color: white;
       padding: 10px;
       border: none;
@@ -97,21 +108,28 @@
       cursor: pointer;
       flex: 1;
       margin: 0 5px;
+      transition: background-color 0.3s;
     }
     .tab-button:hover {
-      background-color: #007399;
+      background-color: #5a3c2b;
     }
     .footer {
       position: absolute;
       bottom: 20px;
       right: 20px;
       font-size: 12px;
-      color: #666;
+      color: #4b2e1e;
+    }
+    .timestamp {
+      font-size: 14px;
+      color: #4b2e1e;
+      text-align: center;
+      margin-bottom: 10px;
     }
   </style>
 </head>
 <body>
- <img src="/kaffesneglen/logo.png" alt="Kaffevogn Logo" class="logo">
+  <img src="https://via.placeholder.com/150x50.png?text=Kaffevogn+Logo" alt="Kaffevogn Logo" class="logo">
   <h1>Kaffevogn Bestilling</h1>
   <div class="tab-buttons">
     <button class="tab-button" onclick="showTab('mor')">Mor's Bestilling</button>
@@ -121,22 +139,33 @@
   <div id="mor" class="tab section active">
     <h2>Indtast hvad du mangler</h2>
     <div class="input-group">
-      <label for="capri">Capri Sonne</label>
-      <input type="number" id="capri" min="0" placeholder="Antal">
+      <span>🥤</span>
+      <div>
+        <label for="capri">Capri Sonne</label>
+        <input type="number" id="capri" min="0" placeholder="Antal">
+      </div>
     </div>
     <div class="input-group">
-      <label for="iskaffe">Iskaffe blanding</label>
-      <input type="number" id="iskaffe" min="0" placeholder="Antal">
+      <span>☕</span>
+      <div>
+        <label for="iskaffe">Iskaffe blanding</label>
+        <input type="number" id="iskaffe" min="0" placeholder="Antal">
+      </div>
     </div>
     <div class="input-group">
-      <label for="isterninger">Isterning poser</label>
-      <input type="number" id="isterninger" min="0" placeholder="Antal">
+      <span>🧊</span>
+      <div>
+        <label for="isterninger">Isterning poser</label>
+        <input type="number" id="isterninger" min="0" placeholder="Antal">
+      </div>
     </div>
     <button id="saveButton" onclick="saveOrder()">Gem Bestilling</button>
-  </div>
+  </div amends
+</div>
 
   <div id="far" class="tab section">
     <h2>Bestilling til pakning</h2>
+    <div class="timestamp" id="timestamp">Ingen bestilling endnu.</div>
     <div id="orderList">
       <p>Ingen bestilling endnu.</p>
     </div>
@@ -152,11 +181,16 @@
     }
 
     function saveOrder() {
-      const order = {
-        capri: parseInt(document.getElementById('capri').value) || 0,
-        iskaffe: parseInt(document.getElementById('iskaffe').value) || 0,
-        isterninger: parseInt(document.getElementById('isterninger').value) || 0
-      };
+      const capri = parseInt(document.getElementById('capri').value) || 0;
+      const iskaffe = parseInt(document.getElementById('iskaffe').value) || 0;
+      const isterninger = parseInt(document.getElementById('isterninger').value) || 0;
+      
+      if (capri === 0 && iskaffe === 0 && isterninger === 0) {
+        alert('Indtast mindst én vare før du gemmer!');
+        return;
+      }
+
+      const order = { capri, iskaffe, isterninger, timestamp: new Date().toLocaleString('da-DK') };
       localStorage.setItem('kaffevognOrder', JSON.stringify(order));
       const saveButton = document.getElementById('saveButton');
       saveButton.classList.add('saved');
@@ -167,6 +201,7 @@
     function updateOrderList() {
       const order = JSON.parse(localStorage.getItem('kaffevognOrder') || '{}');
       const orderList = document.getElementById('orderList');
+      const timestamp = document.getElementById('timestamp');
       orderList.innerHTML = '';
       if (order.capri || order.iskaffe || order.isterninger) {
         const ul = document.createElement('ul');
@@ -174,8 +209,10 @@
         if (order.iskaffe) ul.innerHTML += `<li>Iskaffe blanding: ${order.iskaffe}</li>`;
         if (order.isterninger) ul.innerHTML += `<li>Isterning poser: ${order.isterninger}</li>`;
         orderList.appendChild(ul);
+        timestamp.textContent = `Sidst gemt: ${order.timestamp || 'Ingen tid registreret'}`;
       } else {
         orderList.innerHTML = '<p>Ingen bestilling endnu.</p>';
+        timestamp.textContent = 'Ingen bestilling endnu.';
       }
     }
 
