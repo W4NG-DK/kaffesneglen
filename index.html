@@ -21,8 +21,8 @@
     .logo {
       display: block;
       margin: 0 auto 20px;
-      max-width: 140px; /* Fordoblet fra 70px */
-      max-height: 60px; /* Fordoblet fra 30px */
+      max-width: 140px;
+      max-height: 60px;
       animation: fadeIn 1s ease-in;
     }
     @keyframes fadeIn {
@@ -144,6 +144,27 @@
     }
     .sync-error {
       color: #ff0000;
+    }
+    /* Sticky knapper på mobil og tablet */
+    @media (max-width: 768px) {
+      body {
+        padding-bottom: 80px; /* Plads til sticky knapper */
+      }
+      #saveButton, #far button {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        right: 20px;
+        width: calc(100% - 40px);
+        z-index: 1000;
+        box-shadow: 0 -2px 4px rgba(0,0,0,0.2);
+      }
+      #saveButton {
+        bottom: 20px; /* Første knap */
+      }
+      #far button {
+        bottom: 20px; /* Samme position for nulstil-knap */
+      }
     }
   </style>
 </head>
