@@ -58,6 +58,7 @@
       border: 1px solid #ccc;
       border-radius: 4px;
       box-sizing: border-box;
+      font-size: 16px;
     }
     textarea {
       width: 100%;
@@ -327,7 +328,7 @@
             <input type="number" inputmode="numeric" id="springWater" min="0" placeholder="Antal" onkeypress="if(event.key === 'Enter') saveOrder()">
           </div>
         </div>
-        <div alue_f="input-group">
+        <div class="input-group">
           <span>🍫</span>
           <div>
             <label for="cocoa">Cacao</label>
@@ -397,7 +398,6 @@
         </div>
       </div>
     </details>
-
     <div class="input-group">
       <span>📝</span>
       <div>
@@ -433,22 +433,29 @@
 
   <script>
     const firebaseConfig = {
-      apiKey: "AIzaSyBv1HKHhYpeCm714O2cywaoqNA0eA8L0CYwl5Y",
+      apiKey: "AIzaSyBv1HKHhYpeCmOcywaoqNA0eA8L0CYwl5Y",
       authDomain: "kaffesneglen-bestilling.firebaseapp.com",
       databaseURL: "https://kaffesneglen-bestilling-default-rtdb.europe-west1.firebasedatabase.app",
       projectId: "kaffesneglen-bestilling",
       storageBucket: "kaffesneglen-bestilling.appspot.com",
       messagingSenderId: "838602795466",
-      appId: "1:838602795466:web:8ee7695cbb214aaec78733"
+      appId: "1:838602795466:web:8ee7695abb214aaec78733"
     };
 
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-    document.getElementById('syncStatus').textContent = 'Forbindelse etableret';
+    let database;
+    try {
+      firebase.initializeApp(firebaseConfig);
+      database = firebase.database();
+      document.getElementById('syncStatus').textContent = 'Forbindelse etableret';
+    } catch (error) {
+      document.getElementById('syncStatus').textContent = 'Fejl: Kan ikke forbinde til Firebase';
+      document.getElementById('syncStatus').classList.add('sync-error');
+      console.error('Firebase initialiseringsfejl:', error);
+    }
 
-    window.onload = () => {
+    window.onload = function() {
       document.getElementById('milk').focus();
-      updateOrderList();
+      if (database) updateOrderList();
     };
 
     function showTab(tabId) {
@@ -482,12 +489,19 @@
 
       const hasItems = Object.keys(order).some(key => key !== 'notes' && key !== 'timestamp' && order[key] > 0) || order.notes !== '';
       if (!hasItems) {
-        alert('Indtast mindst én vare eller en note!');
+        alert('Indtast mindst én vare eller en note før du gemmer!');
+        return;
+      }
+
+      if (!database) {
+        document.getElementById('syncStatus').textContent = 'Fejl: Ingen Firebase-forbindelse';
+        document.getElementById('syncStatus').classList.add('sync-error');
         return;
       }
 
       document.getElementById('syncStatus').textContent = 'Synkroniserer...';
 
+      // Gem aktuelt ordre
       database.ref('currentOrder').set(order)
         .then(() => {
           document.getElementById('syncStatus').textContent = 'Synkroniseret!';
@@ -495,23 +509,34 @@
 
           const popupIcon = document.getElementById('popup-icon');
           popupIcon.classList.add('active');
-          setTimeout(() => popupIcon.classList.remove('active'), 1000);
+          setTimeout(() => {
+            popupIcon.classList.remove('active');
+          }, 1000);
         })
-        .catch(error => {
+        .catch((error) => {
           document.getElementById('syncStatus').textContent = `Fejl: ${error.message}`;
           document.getElementById('syncStatus').classList.add('sync-error');
-          console.error('Error saving order:', error);
+          console.error('Fejl ved gemning:', error);
         });
 
+      // Gem i historik
       database.ref('history').push(order)
         .then(() => {
-          database.ref('history').orderByKey().limitToLast(5).once('value', snapshot => {
+          // Begræns historik til 5
+          database.ref('history').orderByKey().once('value', (snapshot) => {
             const history = [];
-            snapshot.forEach(child => history.push(child.val()));
-            database.ref('history').set(history.reverse());
+            snapshot.forEach(child => {
+              history.push({ key: child.key, ...child.val() });
+            });
+            if (history.length > 5) {
+              const oldestKeys = history.slice(0, history.length - 5).map(item => item.key);
+              oldestKeys.forEach(key => database.ref(`history/${key}`).remove());
+            }
           });
         })
-        .catch(error => console.error('Error saving history:', error));
+        .catch((error) => {
+          console.error('Fejl ved historik-gemning:', error);
+        });
 
       const saveButton = document.getElementById('saveButton');
       saveButton.classList.add('saved');
@@ -520,11 +545,14 @@
     }
 
     function updateOrderList() {
+      if (!database) return;
+
       const orderList = document.getElementById('orderList');
       const timestamp = document.getElementById('timestamp');
       const historyList = document.getElementById('historyList');
 
-      database.ref('currentOrder').on('value', snapshot => {
+      // Hent aktuel bestilling
+      database.ref('currentOrder').on('value', (snapshot) => {
         const order = snapshot.val() || {};
         orderList.innerHTML = '';
         const hasItems = Object.keys(order).some(key => key !== 'notes' && key !== 'timestamp' && order[key] > 0);
@@ -555,21 +583,24 @@
           orderList.innerHTML = '<p>Ingen bestilling</p>';
           timestamp.textContent = 'Ingen bestilling';
         }
-      }, error => {
-        console.error('Error fetching order:', error);
+      }, (error) => {
+        console.error('Fejl ved hentning af bestilling:', error);
         document.getElementById('syncStatus').textContent = `Fejl: ${error.message}`;
         document.getElementById('syncStatus').classList.add('sync-error');
       });
 
-      database.ref('history').on('value', snapshot => {
+      // Hent historik
+      database.ref('history').on('value', (snapshot) => {
         const history = [];
-        snapshot.forEach(child => history.push(child.val()));
+        snapshot.forEach(child => {
+          history.push(child.val());
+        });
         historyList.innerHTML = '<h3>Tidligere bestillinger</h3>';
         if (history.length > 0) {
           const ul = document.createElement('ul');
-          history.forEach(hist => {
+          history.reverse().forEach(hist => {
             const items = [];
-            if (hist.milk) items.push(`Milk: ${hist.milk}`);
+            if (hist.milk) items.push(`Mælk: ${hist.milk}`);
             if (hist.iceCubes) items.push(`Isterninger: ${hist.iceCubes}`);
             if (hist.capriSun) items.push(`Capri Sun: ${hist.capriSun}`);
             if (hist.coffee) items.push(`Kaffe: ${hist.coffee}`);
@@ -594,19 +625,27 @@
         } else {
           historyList.innerHTML += '<p>Ingen historik</p>';
         }
-      }, error => console.error('Error fetching history:', error));
+      }, (error) => {
+        console.error('Fejl ved hentning af historik:', error);
+      });
     }
 
     function clearOrder() {
+      if (!database) {
+        document.getElementById('syncStatus').textContent = 'Fejl: Ingen Firebase-forbindelse';
+        document.getElementById('syncStatus').classList.add('sync-error');
+        return;
+      }
+
       database.ref('currentOrder').remove()
         .then(() => {
           document.getElementById('syncStatus').textContent = 'Synkroniseret!';
           document.getElementById('syncStatus').classList.remove('sync-error');
         })
-        .catch(error => {
+        .catch((error) => {
           document.getElementById('syncStatus').textContent = `Fejl: ${error.message}`;
           document.getElementById('syncStatus').classList.add('sync-error');
-          console.error('Error clearing order:', error);
+          console.error('Fejl ved nulstilling:', error);
         });
       updateOrderList();
       document.getElementById('milk').value = '';
