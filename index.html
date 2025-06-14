@@ -273,6 +273,13 @@
           </div>
         </div>
         <div class="input-group">
+          <span>☕</span>
+          <div>
+            <label for="icedCoffee">Iskaffe</label>
+            <input type="number" inputmode="numeric" id="icedCoffee" min="0" placeholder="Antal" onkeypress="if(event.key === 'Enter') saveOrder()">
+          </div>
+        </div>
+        <div class="input-group">
           <span>🧊</span>
           <div>
             <label for="iceCubes">Isterninger</label>
@@ -466,6 +473,7 @@
     function saveOrder() {
       const order = {
         milk: parseInt(document.getElementById('milk').value) || 0,
+        icedCoffee: parseInt(document.getElementById('icedCoffee').value) || 0,
         iceCubes: parseInt(document.getElementById('iceCubes').value) || 0,
         capriSun: parseInt(document.getElementById('capriSun').value) || 0,
         coffee: parseInt(document.getElementById('coffee').value) || 0,
@@ -559,6 +567,7 @@
         if (hasItems || order.notes) {
           const ul = document.createElement('ul');
           if (order.milk) ul.innerHTML += `<li>Mælk: ${order.milk}</li>`;
+          if (order.icedCoffee) ul.innerHTML += `<li>Iskaffe: ${order.icedCoffee}</li>`;
           if (order.iceCubes) ul.innerHTML += `<li>Isterninger: ${order.iceCubes}</li>`;
           if (order.capriSun) ul.innerHTML += `<li>Capri Sun: ${order.capriSun}</li>`;
           if (order.coffee) ul.innerHTML += `<li>Kaffe: ${order.coffee}</li>`;
@@ -601,6 +610,7 @@
           history.reverse().forEach(hist => {
             const items = [];
             if (hist.milk) items.push(`Mælk: ${hist.milk}`);
+            if (hist.icedCoffee) items.push(`Iskaffe: ${hist.icedCoffee}`);
             if (hist.iceCubes) items.push(`Isterninger: ${hist.iceCubes}`);
             if (hist.capriSun) items.push(`Capri Sun: ${hist.capriSun}`);
             if (hist.coffee) items.push(`Kaffe: ${hist.coffee}`);
@@ -649,6 +659,7 @@
         });
       updateOrderList();
       document.getElementById('milk').value = '';
+      document.getElementById('icedCoffee').value = '';
       document.getElementById('iceCubes').value = '';
       document.getElementById('capriSun').value = '';
       document.getElementById('coffee').value = '';
