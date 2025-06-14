@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kaffevogn Bestilling</title>
-  <link rel="icon" type="image/png" href="/kaffesneglen/favicon.png"> <!-- Placeholder favicon -->
+  <link rel="icon" type="image/png" href="/kaffesneglen/favicon.png">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -49,44 +49,44 @@
       display: block;
       margin-bottom: 5px;
       font-weight: bold;
-      color: #2e1f11;
+      color: #4b2e1e;
       font-size: 14px;
     }
     input[type="number"] {
       width: 100%;
-      padding: 0;
-      border: 1px solid #ccc;
-      border-radius: 20px;
-      box-sizing: 0 0px 0px;
-    }
-    textarea {
-      width: block;
       padding: 8px;
       border: 1px solid #ccc;
-      border-radius: 10px;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
       box-sizing: border-box;
       resize: vertical;
-      font-family: 16px;
-      height: Arial, sans-serif;
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      min-height: 60px;
     }
     button {
-      background-color: linear-gradient(#6f4e37, #5a3c2b);
+      background: linear-gradient(#6f4e37, #5a3c2b);
       color: white;
-      padding: 10px;
-      border: 20px;
-      border-radius: none;
-      cursor: 4px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
       width: 100%;
-      font-size: pointer;
-      display: 16px;
-      transition: flex;
-      align-items: background-color;
-      justify-content: 0.3s;
-      gap: center;
-      transform: 8px;
+      font-size: 16px;
+      transition: background 0.3s, transform 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
     button:hover {
-      background-color: linear-gradient(#5a3b2c, #4b2e1e);
+      background: linear-gradient(#5a3c2b, #4b2e1e);
     }
     button.saved {
       background: linear-gradient(#4682b4, #3b6a9b);
@@ -99,11 +99,11 @@
     }
     .check-icon {
       display: none;
-      width: 16px; /* Fast størrelse på ikon */
+      width: 16px;
       height: 16px;
     }
     button.saved .check-icon {
-      display: inline; /* Vis ikon, når bestilling er gemt */
+      display: inline;
     }
     #orderList, #historyList {
       margin-top: 20px;
@@ -147,7 +147,7 @@
       cursor: pointer;
       flex: 1;
       margin: 0 5px;
-      transition: background-color 0.3s;
+      transition: background 0.3s;
     }
     .tab-button:hover {
       background: linear-gradient(#5a3c2b, #4b2e1e);
@@ -170,22 +170,21 @@
       color: #4682b4;
       text-align: center;
       margin-top: 5px;
-      margin-bottom: 80px; /* Plads til sticky knap */
+      margin-bottom: 80px;
     }
     .sync-error {
       color: #ff0000;
     }
-    /* Pop-up ikon animation */
     #popup-icon {
       display: none;
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      z-index: 3000; /* Over alt andet */
+      z-index: 3000;
     }
     #popup-icon img {
-      width: 100px; /* Stort ikon */
+      width: 100px;
       height: 100px;
     }
     #popup-icon.active {
@@ -197,10 +196,9 @@
       50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
       100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
     }
-    /* Sticky knapper på mobil og tablet */
     @media (max-width: 1024px) {
       body {
-        padding-bottom: 100px; /* Plads til sticky knapper og sync-status */
+        padding-bottom: 100px;
       }
       #saveButton, #far button {
         position: fixed;
@@ -208,16 +206,15 @@
         left: 20px;
         right: 20px;
         width: calc(100% - 40px);
-        z-index: 2000; /* Høj z-index for at være over alt */
+        z-index: 2000;
         box-shadow: 0 -2px 4px rgba(0,0,0,0.2);
       }
       #saveButton {
-        bottom: 20px; /* Gem Bestilling */
+        bottom: 20px;
       }
       #far button {
-        bottom: 20px; /* Nulstil Bestilling */
+        bottom: 20px;
       }
-      /* Forbedret iOS-kompatibilitet */
       #saveButton, #far button {
         position: -webkit-sticky;
         position: sticky;
@@ -286,12 +283,10 @@
 
   <div class="footer">Lavet af Malte Wienke</div>
 
-  <!-- Firebase SDK (UMD version) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
   <script>
-    // Firebase konfiguration
     const firebaseConfig = {
       apiKey: "AIzaSyBv1HKHhYpeCmOcywaoqNA0eA8L0CYwl5Y",
       authDomain: "kaffesneglen-bestilling.firebaseapp.com",
@@ -302,7 +297,6 @@
       appId: "1:838602795466:web:8ee7695abb214aaec78733"
     };
 
-    // Initialiser Firebase
     let database;
     try {
       firebase.initializeApp(firebaseConfig);
@@ -314,7 +308,6 @@
       console.error('Firebase initialiseringsfejl:', error);
     }
 
-    // Sæt fokus på første inputfelt ved sideload
     window.onload = function() {
       document.getElementById('capri').focus();
       if (database) updateOrderList();
@@ -352,18 +345,16 @@
 
       document.getElementById('syncStatus').textContent = 'Synkroniserer...';
       
-      // Gem i Firebase
       database.ref('currentOrder').set(order)
         .then(() => {
           document.getElementById('syncStatus').textContent = 'Synkroniseret!';
           document.getElementById('syncStatus').classList.remove('sync-error');
           
-          // Vis pop-up ikon
           const popupIcon = document.getElementById('popup-icon');
           popupIcon.classList.add('active');
           setTimeout(() => {
             popupIcon.classList.remove('active');
-          }, 1000); // Skjul efter animation (1 sekund)
+          }, 1000);
         })
         .catch((error) => {
           document.getElementById('syncStatus').textContent = `Fejl: ${error.message}`;
@@ -371,10 +362,8 @@
           console.error('Fejl ved gemning:', error);
         });
 
-      // Gem i historik
       database.ref('history').push(order)
         .then(() => {
-          // Begræns historik til 5
           database.ref('history').orderByKey().limitToLast(5).once('value', (snapshot) => {
             const history = [];
             snapshot.forEach(child => {
@@ -400,7 +389,6 @@
       const timestamp = document.getElementById('timestamp');
       const historyList = document.getElementById('historyList');
 
-      // Hent aktuel bestilling
       database.ref('currentOrder').on('value', (snapshot) => {
         const order = snapshot.val() || {};
         orderList.innerHTML = '';
@@ -422,7 +410,6 @@
         document.getElementById('syncStatus').classList.add('sync-error');
       });
 
-      // Hent historik
       database.ref('history').on('value', (snapshot) => {
         const history = [];
         snapshot.forEach(child => {
