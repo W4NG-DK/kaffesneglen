@@ -49,32 +49,44 @@
       display: block;
       margin-bottom: 5px;
       font-weight: bold;
-      color: #4b2e1e;
+      color: #2e1f11;
+      font-size: 14px;
     }
-    input {
+    input[type="number"] {
       width: 100%;
+      padding: 0;
+      border: 1px solid #ccc;
+      border-radius: 20px;
+      box-sizing: 0 0px 0px;
+    }
+    textarea {
+      width: block;
       padding: 8px;
       border: 1px solid #ccc;
-      border-radius: 4px;
+      border-radius: 10px;
       box-sizing: border-box;
+      resize: vertical;
+      font-family: 16px;
+      height: Arial, sans-serif;
     }
     button {
-      background: linear-gradient(#6f4e37, #5a3c2b);
+      background-color: linear-gradient(#6f4e37, #5a3c2b);
       color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
+      padding: 10px;
+      border: 20px;
+      border-radius: none;
+      cursor: 4px;
       width: 100%;
-      font-size: 16px;
-      transition: background-color 0.3s, transform 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px; /* Afstand mellem tekst og ikon */
+      font-size: pointer;
+      display: 16px;
+      transition: flex;
+      align-items: background-color;
+      justify-content: 0.3s;
+      gap: center;
+      transform: 8px;
     }
     button:hover {
-      background: linear-gradient(#5a3c2b, #4b2e1e);
+      background-color: linear-gradient(#5a3b2c, #4b2e1e);
     }
     button.saved {
       background: linear-gradient(#4682b4, #3b6a9b);
@@ -105,6 +117,11 @@
       background: #f9f9f9;
       margin-bottom: 5px;
       border-radius: 4px;
+    }
+    .notes {
+      font-style: italic;
+      color: #4b2e1e;
+      margin-top: 5px;
     }
     #historyList h3 {
       color: #4b2e1e;
@@ -222,21 +239,28 @@
       <span>🥤</span>
       <div>
         <label for="capri">Capri Sonne</label>
-        <input type="number" id="capri" min="0" placeholder="Antal" onkeypress="if(event.key === 'Enter') saveOrder()">
+        <input type="number" inputmode="numeric" id="capri" min="0" placeholder="Antal" onkeypress="if(event.key === 'Enter') saveOrder()">
       </div>
     </div>
     <div class="input-group">
       <span>☕</span>
       <div>
         <label for="iskaffe">Iskaffe blanding</label>
-        <input type="number" id="iskaffe" min="0" placeholder="Antal" onkeypress="if(event.key === 'Enter') saveOrder()">
+        <input type="number" inputmode="numeric" id="iskaffe" min="0" placeholder="Antal" onkeypress="if(event.key === 'Enter') saveOrder()">
       </div>
     </div>
     <div class="input-group">
       <span>🧊</span>
       <div>
         <label for="isterninger">Isterning poser</label>
-        <input type="number" id="isterninger" min="0" placeholder="Antal" onkeypress="if(event.key === 'Enter') saveOrder()">
+        <input type="number" inputmode="numeric" id="isterninger" min="0" placeholder="Antal" onkeypress="if(event.key === 'Enter') saveOrder()">
+      </div>
+    </div>
+    <div class="input-group">
+      <span>📝</span>
+      <div>
+        <label for="notes">Noter</label>
+        <textarea id="notes" placeholder="Skriv eventuelle noter her..." rows="4"></textarea>
       </div>
     </div>
     <button id="saveButton" onclick="saveOrder()">Gem Bestilling <img class="check-icon" src="/kaffesneglen/tjek.png" alt="Tjek-ikon"></button>
@@ -305,13 +329,20 @@
       const capri = parseInt(document.getElementById('capri').value) || 0;
       const iskaffe = parseInt(document.getElementById('iskaffe').value) || 0;
       const isterninger = parseInt(document.getElementById('isterninger').value) || 0;
+      const notes = document.getElementById('notes').value.trim();
       
-      if (capri === 0 && iskaffe === 0 && isterninger === 0) {
-        alert('Indtast mindst én vare før du gemmer!');
+      if (capri === 0 && iskaffe === 0 && isterninger === 0 && notes === '') {
+        alert('Indtast mindst én vare eller en note før du gemmer!');
         return;
       }
 
-      const order = { capri, iskaffe, isterninger, timestamp: new Date().toLocaleString('da-DK', { timeZone: 'Europe/Copenhagen' }) };
+      const order = { 
+        capri, 
+        iskaffe, 
+        isterninger, 
+        notes, 
+        timestamp: new Date().toLocaleString('da-DK', { timeZone: 'Europe/Copenhagen' }) 
+      };
       
       if (!database) {
         document.getElementById('syncStatus').textContent = 'Fejl: Ingen Firebase-forbindelse';
@@ -373,11 +404,12 @@
       database.ref('currentOrder').on('value', (snapshot) => {
         const order = snapshot.val() || {};
         orderList.innerHTML = '';
-        if (order.capri || order.iskaffe || order.isterninger) {
+        if (order.capri || order.iskaffe || order.isterninger || order.notes) {
           const ul = document.createElement('ul');
           if (order.capri) ul.innerHTML += `<li>Capri Sonne: ${order.capri}</li>`;
           if (order.iskaffe) ul.innerHTML += `<li>Iskaffe blanding: ${order.iskaffe}</li>`;
           if (order.isterninger) ul.innerHTML += `<li>Isterning poser: ${order.isterninger}</li>`;
+          if (order.notes) ul.innerHTML += `<li class="notes">Noter: ${order.notes}</li>`;
           orderList.appendChild(ul);
           timestamp.textContent = `Sidst gemt: ${order.timestamp || 'Ingen tid registreret'}`;
         } else {
@@ -404,6 +436,7 @@
             if (hist.capri) items.push(`Capri Sonne: ${hist.capri}`);
             if (hist.iskaffe) items.push(`Iskaffe blanding: ${hist.iskaffe}`);
             if (hist.isterninger) items.push(`Isterning poser: ${hist.isterninger}`);
+            if (hist.notes) items.push(`Noter: ${hist.notes}`);
             ul.innerHTML += `<li>${hist.timestamp}: ${items.join(', ')}</li>`;
           });
           historyList.appendChild(ul);
@@ -436,6 +469,7 @@
       document.getElementById('capri').value = '';
       document.getElementById('iskaffe').value = '';
       document.getElementById('isterninger').value = '';
+      document.getElementById('notes').value = '';
       const saveButton = document.getElementById('saveButton');
       saveButton.classList.remove('saved');
       alert('Bestilling nulstillet!');
