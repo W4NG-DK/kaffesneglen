@@ -158,6 +158,28 @@
     .sync-error {
       color: #ff0000;
     }
+    /* Pop-up ikon animation */
+    #popup-icon {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 3000; /* Over alt andet */
+    }
+    #popup-icon img {
+      width: 100px; /* Stort ikon */
+      height: 100px;
+    }
+    #popup-icon.active {
+      display: block;
+      animation: popAndFade 1s ease-out forwards;
+    }
+    @keyframes popAndFade {
+      0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+      50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+    }
     /* Sticky knapper på mobil og tablet */
     @media (max-width: 1024px) {
       body {
@@ -234,6 +256,10 @@
     <button onclick="clearOrder()">Nulstil Bestilling</button>
   </div>
 
+  <div id="popup-icon">
+    <img src="/kaffesneglen/tjek.png" alt="Pop-up Tjek-ikon">
+  </div>
+
   <div class="footer">Lavet af Malte Wienke</div>
 
   <!-- Firebase SDK (UMD version) -->
@@ -300,6 +326,13 @@
         .then(() => {
           document.getElementById('syncStatus').textContent = 'Synkroniseret!';
           document.getElementById('syncStatus').classList.remove('sync-error');
+          
+          // Vis pop-up ikon
+          const popupIcon = document.getElementById('popup-icon');
+          popupIcon.classList.add('active');
+          setTimeout(() => {
+            popupIcon.classList.remove('active');
+          }, 1000); // Skjul efter animation (1 sekund)
         })
         .catch((error) => {
           document.getElementById('syncStatus').textContent = `Fejl: ${error.message}`;
